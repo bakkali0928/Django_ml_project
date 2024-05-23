@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+
+{% block main %}
+    <div class="container pt-5">
+        <div class="row">
+
+        <h1>Prediction Results</h1>
+
+            <table class="table">
+                <thead>
+                <tr>
+                <th scope="col">#</th>
+                <th scope="col">Age</th>
+                <th scope="col">Height</th>
+                <th scope="col">Weight</th>
+                <th scope="col">FCVC</th>
+                <th scope="col">NCP</th>
+                <th scope="col">CH2O</th>
+                <th scope="col">FAF</th>
+                <th scope="col">TUE</th>
+                <th scope="col">Gender</th>
+                <th scope="col">Family History</th>
+                <th scope="col">CAEC</th>
+                <th scope="col">MTRANS</th>
+                <th scope="col">CALC</th>
+                <th scope="col">SCC</th>
+                <th scope="col">SMOKE</th>
+                <th scope="col">FAVC</th>
+                <th scope="col">Prediction</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for data in dataset %}
+                    <tr>
+                    <th scope="row">{{ data.id }}</th>
+                    <td>{{ data.age }}</td>
+                    <td>{{ data.height }}</td>
+                    <td>{{ data.weight }}</td>
+                    <td>{{ data.fcvc }}</td>
+                    <td>{{ data.ncp }}</td>
+                    <td>{{ data.ch2o }}</td>
+                    <td>{{ data.faf }}</td>
+                    <td>{{ data.tue }}</td>
+                    <td>{{ data.gender }}</td>
+                    <td>{{ data.family_history }}</td>
+                    <td>{{ data.caec }}</td>
+                    <td>{{ data.mtrans }}</td>
+                    <td>{{ data.calc }}</td>
+                    <td>{{ data.scc }}</td>
+                    <td>{{ data.smoke }}</td>
+                    <td>{{ data.favc }}</td>
+                    <td>{{ data.classification }}</td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+{% endblock %}

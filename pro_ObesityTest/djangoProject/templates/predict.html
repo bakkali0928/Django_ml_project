@@ -1,0 +1,177 @@
+{% extends "base.html" %}
+
+{% block main %}
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Prediction Results</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <h5>Prediction Input:</h5>
+                <div>Age: <span id="agee"></span></div>
+                <div>Height: <span id="heightt"></span></div>
+                <div>Weight: <span id="weightt"></span></div>
+                <div>FCVC: <span id="fcvcc"></span></div>
+                <div>NCP: <span id="ncpp"></span></div>
+                <div>CH2O: <span id="ch2oo"></span></div>
+                <div>FAF: <span id="faff"></span></div>
+                <div>TUE: <span id="tuee"></span></div>
+                <div>Gender: <span id="genderr"></span></div>
+                <div>Family History: <span id="family_historyy"></span></div>
+                <div>CAEC: <span id="caecc"></span></div>
+                <div>MTRANS: <span id="mtranss"></span></div>
+                <div>CALC: <span id="calcc"></span></div>
+                <div>SCC: <span id="sccc"></span></div>
+                <div>SMOKE: <span id="smokee"></span></div>
+                <div>FAVC: <span id="favcc"></span></div>
+                <h5 class="pt-3">Prediction Classification:</h5>
+                <div id="prediction"></div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a class="btn btn-primary" href="/results" role="button">View DB</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container pt-5">
+    <div class="row justify-content-md-center">
+        <div class="col-md-4">
+            <h1>Obesity Prediction</h1>
+            <form action="" id="post-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="age">Age</label>
+                    <input type="number" step="1" class="form-control" id="age" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="height">Height</label>
+                    <input type="number" step="0.01" class="form-control" id="height" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="weight">Weight</label>
+                    <input type="number" step="0.1" class="form-control" id="weight" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="fcvc">How many vegetables do you usually eat in your meals? (FCVC)</label>
+                    <input type="number" step="1" class="form-control" id="fcvc" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="ncp">How many main meals do you have daily? (NCP)</label>
+                    <input type="number" step="0.1" class="form-control" id="ncp" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="ch2o">How much water do you drink daily? (CH2O)</label>
+                    <input type="number" step="0.1" class="form-control" id="ch2o" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="faf">How often do you have physical activity? (FAF)</label>
+                    <input type="number" step="0.1" class="form-control" id="faf" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="tue">How much time do you use technological devices? (TUE)</label>
+                    <input type="number" step="0.1" class="form-control" id="tue" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="gender">Gender (Male/Female)</label>
+                    <input type="text" class="form-control" id="gender" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="family_history">Family history of overweight (yes/no)</label>
+                    <input type="text" class="form-control" id="family_history" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="caec">Do you eat any food between meals? (Always/Frequently/Sometimes/No)</label>
+                    <input type="text" class="form-control" id="caec" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="mtrans">Which transportation do you usually use? (Public_Transportation/Bike/Motorbike/Automobile/Walking)</label>
+                    <input type="text" class="form-control" id="mtrans" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="calc">How often do you drink alcohol? (Always/Frequently/Sometimes/No)</label>
+                    <input type="text" class="form-control" id="calc" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="scc">Do you monitor the calories you eat daily? (yes/no)</label>
+                    <input type="text" class="form-control" id="scc" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="smoke">Do you smoke? (yes/no)</label>
+                    <input type="text" class="form-control" id="smoke" placeholder="" required>
+                </div>
+                <div class="form-group">
+                    <label for="favc">Do you eat high caloric food frequently? (yes/no)</label>
+                    <input type="text" class="form-control" id="favc" placeholder="" required>
+                </div>
+                <button type="submit" value="Submit" class="btn btn-primary" data-toggle="modal" data-target="#exampleModal">Submit</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).on('submit', '#post-form',function(e){
+        e.preventDefault();
+        $.ajax({
+            type:'POST',
+            url:'{% url "predict:predict_chances" %}',
+            data:{
+                age:$('#age').val(),
+                height:$('#height').val(),
+                weight:$('#weight').val(),
+                fcvc:$('#fcvc').val(),
+                ncp:$('#ncp').val(),
+                ch2o:$('#ch2o').val(),
+                faf:$('#faf').val(),
+                tue:$('#tue').val(),
+                gender:$('#gender').val(),
+                family_history:$('#family_history').val(),
+                caec:$('#caec').val(),
+                mtrans:$('#mtrans').val(),
+                calc:$('#calc').val(),
+                scc:$('#scc').val(),
+                smoke:$('#smoke').val(),
+                favc:$('#favc').val(),
+                csrfmiddlewaretoken:$('input[name=csrfmiddlewaretoken]').val(),
+                action: 'post'
+            },
+            success:function(json) {
+                document.forms["post-form"].reset();
+                document.getElementById("prediction").innerHTML = json['result'];
+                document.getElementById("agee").innerHTML = json['age'];
+                document.getElementById("heightt").innerHTML = json['height'];
+                document.getElementById("weightt").innerHTML = json['weight'];
+                document.getElementById("fcvcc").innerHTML = json['fcvc'];
+                document.getElementById("ncpp").innerHTML = json['ncp'];
+                document.getElementById("ch2oo").innerHTML = json['ch2o'];
+                document.getElementById("faff").innerHTML = json['faf'];
+                document.getElementById("tuee").innerHTML = json['tue'];
+                document.getElementById("genderr").innerHTML = json['gender'];
+                document.getElementById("family_historyy").innerHTML = json['family_history'];
+                document.getElementById("caecc").innerHTML = json['caec'];
+                document.getElementById("mtranss").innerHTML = json['mtrans'];
+                document.getElementById("calcc").innerHTML = json['calc'];
+                document.getElementById("sccc").innerHTML = json['scc'];
+                document.getElementById("smokee").innerHTML = json['smoke'];
+                document.getElementById("favcc").innerHTML = json['favc'];
+            },
+            error : function(xhr,errmsg,err) {
+                console.log(xhr.status + ": " + xhr.responseText);
+            }
+        });
+    });
+</script>
+
+{% endblock %}
+
+
+
+
+
